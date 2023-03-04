@@ -9,7 +9,7 @@ import { api } from "~/utils/api";
 import Table from "./components/Table";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const hello = api.example.hello.useQuery({ text: ", checkout and rate other paper portfolios" });
 
   return (
     <>
