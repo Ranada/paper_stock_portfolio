@@ -11,6 +11,7 @@ import Table from "./components/Table";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
+  const stockInfo = api.example.getStockInfo.useQuery({text: 'msft'});
 
   return (
     <>
@@ -29,6 +30,9 @@ const Home: NextPage = () => {
             <Table />
           </div>
           <div className="flex flex-col items-center gap-2">
+            <p className="text-2xl text-white">
+              {stockInfo.data ? stockInfo.data.stock : "Searching for stock..."}
+            </p>
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>

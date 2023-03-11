@@ -22,4 +22,12 @@ export const exampleRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  getStockInfo: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(({ input }) => {
+      return {
+        stock: `Selected stock: ${input.text}`,
+      };
+    }),
 });
