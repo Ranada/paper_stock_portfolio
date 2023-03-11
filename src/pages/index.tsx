@@ -31,7 +31,16 @@ const Home: NextPage = () => {
           </div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
-              {stockInfo.data ? stockInfo.data.stock : "Searching for stock..."}
+              Ticker: {stockInfo.data ? stockInfo.data.ticker : "Searching for stock..."}
+            </p>
+            <p className="text-2xl text-white">
+              Company: {stockInfo.data ? stockInfo.data.company : "Searching for stock..."}
+            </p>
+            <p className="text-2xl text-white">
+              Market cap: {stockInfo.data ? stockInfo.data.marketcap : "Searching for stock..."}
+            </p>
+            <p className="text-2xl text-white">
+              Closing price: {stockInfo.data ? stockInfo.data.closingPrice : "Searching for stock..."}
             </p>
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
