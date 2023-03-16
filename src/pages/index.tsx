@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 
 // Components
 import Table from "./components/Table";
+import Form from "./components/Form";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
@@ -30,6 +31,7 @@ const Home: NextPage = () => {
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="mb-8">
+            <Form />
               <p className="text-lg text-white">
                 Ticker:{" "}
                 {stockInfo.data

@@ -20,19 +20,19 @@ const getCompanyOverview = async (ticker: string) => {
   }
 };
 
-const getMonthlyPrice = async (ticker: string) => {
-  try {
-    ticker = ticker.toUpperCase();
+// const getMonthlyPrice = async (ticker: string) => {
+//   try {
+//     ticker = ticker.toUpperCase();
 
-    const res = await fetch(
-      `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=8EJHKBNM180M13R5`
-    );
-    const data = await res.json() as object;
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-};
+//     const res = await fetch(
+//       `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=8EJHKBNM180M13R5`
+//     );
+//     const data = await res.json() as object;
+//     return data;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
