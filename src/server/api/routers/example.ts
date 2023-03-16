@@ -6,13 +6,28 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
-const callAPI = async () => {
+const getCompanyOverview = async (ticker: string) => {
   try {
+    ticker = ticker.toUpperCase();
+
     const res = await fetch(
-      `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=demo`
+      `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=8EJHKBNM180M13R5`
     );
-    const data = await res.json();
-    // console.log(data);
+    const data = (await res.json()) as object;
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getMonthlyPrice = async (ticker: string) => {
+  try {
+    ticker = ticker.toUpperCase();
+
+    const res = await fetch(
+      `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=8EJHKBNM180M13R5`
+    );
+    const data = await res.json() as object;
     return data;
   } catch (err) {
     console.log(err);
@@ -39,22 +54,42 @@ export const exampleRouter = createTRPCRouter({
   getStockInfo: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(async ({ input }) => {
-      const mockData = {
-        ticker: "MSFT",
-        company: "Microsoft",
-        marketcap: "1.5T",
-      };
+      console.log("INPUT: ", input);
+      const ticker = input.text;
+    
+      interface APIData {
+        Symbol: string,
+        AssetType: string,
+        Name: string,
+        Description: string,
+        MarketCapitalization: string
+      }
+      
+      const companyAPIData: APIData = await getCompanyOverview(ticker) as APIData;
+      // const result = await getMonthlyPrice(ticker);
+      
+      interface Company {
+        symbol: string,
+        assetType: string,
+        name: string,
+        description: string,
+        marketCap: string
+      }
 
-      const result = await callAPI();
+      const company: Company  = {
+        symbol: companyAPIData.Symbol,
+        assetType: companyAPIData.AssetType,
+        name: companyAPIData.Name,
+        description: companyAPIData.Description,
+        marketCap: ((parseFloat(companyAPIData.MarketCapitalization) / 1000000000).toFixed(1)).toString()
+      }
 
       // console.log(result["Monthly Time Series"]['2011-10-31']);
-      const sampleTimeData = result["Monthly Time Series"]["2011-10-31"]['4. close'];
-      console.log(sampleTimeData)
+      // const sampleTimeData = result["Monthly Time Series"]["2011-10-31"]['4. close'];
+      // console.log(sampleTimeData)
+
       return {
-        ticker: mockData.ticker, 
-        company: mockData.company, 
-        marketcap: mockData.marketcap, 
-        closingPrice: sampleTimeData
+        company
       };
     }),
 });

@@ -11,7 +11,7 @@ import Table from "./components/Table";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
-  const stockInfo = api.example.getStockInfo.useQuery({text: 'msft'});
+  const stockInfo = api.example.getStockInfo.useQuery({text: 'abnb'});
 
   return (
     <>
@@ -21,7 +21,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#004e92] to-[#000428]">
-        <div className="container flex w-2/3 flex-col items-center justify-center gap-12 px-4 py-16 ">
+        <div className="container flex w-2/3 flex-col items-center justify-left gap-12 px-4 py-16 ">
           <h1 className="text-left text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Paper Stock Portfolio
           </h1>
@@ -33,27 +33,39 @@ const Home: NextPage = () => {
               <p className="text-lg text-white">
                 Ticker:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.ticker
+                  ? stockInfo.data.company.symbol
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
                 Company:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.company
+                  ? stockInfo.data.company.name
+                  : "Searching for stock..."}
+              </p>
+              <p className="text-lg text-white">
+                Asset Type:{" "}
+                {stockInfo.data
+                  ? stockInfo.data.company.assetType
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
                 Market cap:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.marketcap
+                  ? `$ ${stockInfo.data.company.marketCap} B`
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
+                Description:{" "}
+                {stockInfo.data
+                  ? stockInfo.data.company.description
+                  : "Searching for stock..."}
+              </p>
+              {/* <p className="text-lg text-white">
                 Closing price:{" "}
                 {stockInfo.data
                   ? stockInfo.data.closingPrice
                   : "Searching for stock..."}
-              </p>
+              </p> */}
             </div>
             <div>
               <p className="text-2xl text-white">
