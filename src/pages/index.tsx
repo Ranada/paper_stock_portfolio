@@ -12,7 +12,7 @@ import Form from "./components/Form";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
-  const stockInfo = api.example.getStockInfo.useQuery({text: 'abnb'});
+  const stockInfo = api.stocks.getStockInfo.useQuery({text: 'ABNB'});
 
   return (
     <>
@@ -35,31 +35,31 @@ const Home: NextPage = () => {
               <p className="text-lg text-white">
                 Ticker:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.company.symbol
+                  ? stockInfo.data.company.Symbol
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
                 Company:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.company.name
+                  ? stockInfo.data.company.Name
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
                 Asset Type:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.company.assetType
+                  ? stockInfo.data.company.AssetType
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
                 Market cap:{" "}
                 {stockInfo.data
-                  ? `$ ${stockInfo.data.company.marketCap} B`
+                  ? `$ ${stockInfo.data.company.MarketCapitalization} B`
                   : "Searching for stock..."}
               </p>
               <p className="text-lg text-white">
                 Description:{" "}
                 {stockInfo.data
-                  ? stockInfo.data.company.description
+                  ? stockInfo.data.company.Description
                   : "Searching for stock..."}
               </p>
               {/* <p className="text-lg text-white">
