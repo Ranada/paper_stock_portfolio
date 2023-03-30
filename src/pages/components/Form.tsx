@@ -17,22 +17,19 @@
   ```
 */
 export default function Form() {
-
   // const [ticker, setTicker] = useState("");
   // const [stockInfo, setStockInfo] = useState({});
 
-  // console.log("Test: ", ticker);
-  const tickerField = document.querySelector("#ticker") as HTMLInputElement;
+  const handleSubmit = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    const target = event.target as typeof event.target & {
+      ticker: { value: string };
+    };
+    const tickerInput = target.ticker.value;
 
-
- const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-   event.preventDefault();
-   console.dir(tickerField)
-   console.log(tickerField.value);
-  
-    console.log("Clicked!", tickerField, event);
+    console.log("Clicked!", tickerInput, event);
     // setStockInfo(api.stocks.getStockInfo.useQuery({ text: ticker }));
-  }
+  };
 
   return (
     <>
