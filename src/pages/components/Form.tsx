@@ -22,20 +22,21 @@ export default function Form() {
   // const [stockInfo, setStockInfo] = useState({});
 
   // console.log("Test: ", ticker);
-
-  // function handleSubmit(event) {
-  //   event?.preventDefault();
-  //   console.log("Clicked!", ticker, event);
-
-  //   setStockInfo(api.stocks.getStockInfo.useQuery({ text: ticker }));
+  const tickerField = document.querySelector("#ticker") as HTMLInputElement;
 
 
-  //   // return stockInfo;
-  // }
+ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+   event.preventDefault();
+   console.dir(tickerField)
+   console.log(tickerField.value);
+  
+    console.log("Clicked!", tickerField, event);
+    // setStockInfo(api.stocks.getStockInfo.useQuery({ text: ticker }));
+  }
 
   return (
     <>
-      <form action="/api/routers/stocks" method="POST">
+      <form action="#" method="POST" onSubmit={handleSubmit}>
         <div className="overflow-hidden">
           <div className="mb-8 flex flex-wrap items-end space-x-4">
             <div className="w-1/3">
@@ -60,7 +61,6 @@ export default function Form() {
               <button
                 type="submit"
                 className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                // onClick={handleSubmit}
               >
                 Search
               </button>
