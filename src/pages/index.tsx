@@ -8,15 +8,57 @@ import { api } from "~/utils/api";
 
 // Components
 import Table from "./components/Table";
-import Form from "./components/Form";
+// import Form from "./components/Form";
+
+import { useState } from 'react';
+// import { z } from "zod";
 
 const Home: NextPage = () => {
+  const [tickerInput, setTickerInput] = useState('');
   const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
-  const stockInfo = api.stocks.getStockInfo.useQuery({text: 'ABNB'});
+  const stockInfo = api.stocks.getStockInfo.useQuery({ text: tickerInput });
+
+  console.log("HELLO FROM CLIENT! YOUR INPUT IS: ", tickerInput);
+  
+  // const [stockInfo, setStockInfo] = useState({});
+  
+  console.log("HELLO FROM CLIENT! YOUR STOCK INFO: ", stockInfo.data);
+  
+    const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
+      const target = event.target as typeof event.target & {
+        ticker: { value: string };
+      };
+      const tickerInput = target.ticker.value;
+
+      console.log("Clicked!", tickerInput, event);
+      setTickerInput(tickerInput);
+
+      // setStockInfo(stockInfo);
+    };
+  
+  
+  
+  
+  
+  
+  
+  // const apiDataValidator = z.object({
+  //   Symbol: z.string(),
+  //   AssetType: z.string().optional(),
+  //   Name: z.string().optional(),
+  //   Description: z.string().optional(),
+  //   MarketCapitalization: z.string(),
+  // });
+
+  // type apiDataType = z.infer<typeof apiDataValidator>;
+
+  // const stockInfo = api.stocks.getStockInfo.useQuery({text: tickerInput});
 
   // Testing database connection
+  // TODO: Use investments table data to populate table
   const { data } = api.stocks.getAll.useQuery();
-  console.log("DB DATA:", data)
+  console.log("DB DATA:", typeof data, data)
 
   return (
     <>
@@ -31,11 +73,51 @@ const Home: NextPage = () => {
             Paper Stock Portfolio
           </h1>
           <div className="w-full rounded-xl bg-white/10 p-4">
+            {data?.map((investment) => (
+              <li key={investment.id} className="text-white">
+                {investment.ticker} {investment.company} {investment.marketCap}{" "}
+                {investment.percentHoldings}
+              </li>
+            ))}
             <Table />
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="mb-8">
-              <Form />
+              {/* <Form setTickerInput={setTickerInput} setStockInfo={setStockInfo} /> */}
+
+              <form action="#" method="POST" onSubmit={handleSubmit}>
+                <div className="overflow-hidden">
+                  <div className="mb-8 flex flex-wrap items-end space-x-4">
+                    <div className="w-1/3">
+                      <label
+                        htmlFor="ticker"
+                        className="block text-sm font-medium leading-6 text-white"
+                      >
+                        Search ticker
+                      </label>
+                      <input
+                        type="text"
+                        name="ticker"
+                        id="ticker"
+                        autoComplete="off"
+                        placeholder="Enter ticker symbol"
+                        // value=""
+                        // onChange={({ target }) => setTicker(target?.value)}
+                        className="mt-2 block w-full rounded-md border-0 bg-white/[.10] py-1.5 pl-2.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                    <div className="w-1/6">
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                      >
+                        Search
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
               <p className="text-lg text-white">
                 Ticker:{" "}
                 {stockInfo.data

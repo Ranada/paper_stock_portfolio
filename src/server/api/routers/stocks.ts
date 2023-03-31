@@ -70,7 +70,10 @@ export const stocksRouter = createTRPCRouter({
       };
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.investments.findMany();
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const investments = await ctx.prisma.investments.findMany({
+        take: 100,
+    });
+    return investments;
   }),
 });
