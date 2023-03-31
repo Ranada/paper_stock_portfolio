@@ -10,25 +10,76 @@ import { useState } from 'react';
 
 const Home: NextPage = () => {
   const [tickerInput, setTickerInput] = useState('');
-  const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
+  const hello = api.example.hello.useQuery({ text: "Track stocks and your target percentage holdings." });
   const stockInfo = api.stocks.getStockInfo.useQuery({ text: tickerInput });
 
   console.log("HELLO FROM CLIENT! YOUR INPUT IS: ", tickerInput);
   console.log("HELLO FROM CLIENT! YOUR STOCK INFO: ", stockInfo.data);
   
-    const handleSubmit = (event: React.FormEvent) => {
-      event.preventDefault();
-      const target = event.target as typeof event.target & {
-        ticker: { value: string };
-      };
-      const tickerInput = target.ticker.value;
-
-      console.log("Submitted!", tickerInput, event);
-      setTickerInput(tickerInput);
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const target = event.target as typeof event.target & {
+      ticker: { value: string };
     };
+    const tickerInput = target.ticker.value;
+
+    console.log("Submitted!", tickerInput, event);
+    setTickerInput(tickerInput);
+  };
   
   const { data } = api.stocks.getAll.useQuery();
   console.log("DB DATA:", typeof data, data)
+
+  const DisplayCompanyInfo: React.FC = () => {
+    if (stockInfo.data?.company.Symbol) {
+      return (
+        <div className="flex flex-col gap-y-4">
+          <div>
+            <h3 className="text-xs text-white">TICKER</h3>
+            <h2 className="mb-2 text-2xl text-white">
+              {stockInfo.data
+                ? stockInfo.data.company.Symbol
+                : "Searching for stock..."}
+            </h2>
+          </div>
+          <div>
+            <h3 className="text-xs text-white">COMPANY NAME</h3>
+            <h2 className="mb-2 text-2xl text-white">
+              {stockInfo.data
+                ? stockInfo.data.company.Name
+                : "Searching for stock..."}
+            </h2>
+          </div>
+          <div>
+            <h3 className="text-xs text-white">ASSET TYPE</h3>
+            <h2 className="mb-2 text-2xl text-white">
+              {stockInfo.data
+                ? stockInfo.data.company.AssetType
+                : "Searching for stock..."}
+            </h2>
+          </div>
+          <div>
+            <h3 className="text-xs text-white">MARKET CAPITALIZATION</h3>
+            <h2 className="mb-2 text-2xl text-white">
+              {stockInfo.data?.company.Symbol
+                ? `$ ${stockInfo.data.company.MarketCapitalization} B`
+                : ""}
+            </h2>
+          </div>
+          <div>
+            <h3 className="text-xs text-white">SUMMARY</h3>
+            <h2 className="mb-2 text-2xl leading-normal text-white">
+              {stockInfo.data
+                ? stockInfo.data.company.Description
+                : "Searching for stock..."}
+            </h2>
+          </div>
+        </div>
+      );
+    }
+    return <div></div>
+  }
+
 
   return (
     <>
@@ -42,6 +93,11 @@ const Home: NextPage = () => {
           <h1 className="text-left text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Paper Stock Portfolio
           </h1>
+          <div>
+            <p className="text-2xl text-white">
+              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
+            </p>
+          </div>
           <div className="w-full rounded-xl bg-white/10 p-4">
             <table className="w-full table-fixed text-white">
               <thead>
@@ -61,13 +117,13 @@ const Home: NextPage = () => {
                     <td>{investment.ticker}</td>
                     <td>{investment.company}</td>
                     <td>{investment.marketCap}</td>
-                    <td>{investment.percentHoldings}</td>
+                    <td>{investment.percentHoldings} %</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <div className="flex flex-col justify-start gap-2">
+          <div className="flex w-full flex-col justify-start gap-2">
             <div className="mb-8">
               <form action="#" method="POST" onSubmit={handleSubmit}>
                 <div className="overflow-hidden">
@@ -99,48 +155,55 @@ const Home: NextPage = () => {
                   </div>
                 </div>
               </form>
-
-              <p className="text-lg text-white">
-                Ticker:{" "}
-                {stockInfo.data
-                  ? stockInfo.data.company.Symbol
-                  : "Searching for stock..."}
-              </p>
-              <p className="text-lg text-white">
-                Company:{" "}
-                {stockInfo.data
-                  ? stockInfo.data.company.Name
-                  : "Searching for stock..."}
-              </p>
-              <p className="text-lg text-white">
-                Asset Type:{" "}
-                {stockInfo.data
-                  ? stockInfo.data.company.AssetType
-                  : "Searching for stock..."}
-              </p>
-              <p className="text-lg text-white">
-                Market cap:{" "}
-                {stockInfo.data
-                  ? `$ ${stockInfo.data.company.MarketCapitalization} B`
-                  : "Searching for stock..."}
-              </p>
-              <p className="text-lg text-white">
-                Description:{" "}
-                {stockInfo.data
-                  ? stockInfo.data.company.Description
-                  : "Searching for stock..."}
-              </p>
+              <DisplayCompanyInfo />
+              {/* <div className="flex flex-col gap-y-8">
+                <div>
+                  <h3 className="text-lg text-white">TICKER</h3>
+                  <h2 className="mb-2 text-3xl text-white">
+                    {stockInfo.data
+                      ? stockInfo.data.company.Symbol
+                      : "Searching for stock..."}
+                  </h2>
+                </div>
+                <div>
+                  <h3 className="text-lg text-white">COMPANY NAME</h3>
+                  <h2 className="mb-2 text-3xl text-white">
+                    {stockInfo.data
+                      ? stockInfo.data.company.Name
+                      : "Searching for stock..."}
+                  </h2>
+                </div>
+                <div>
+                  <h3 className="text-lg text-white">ASSET TYPE</h3>
+                  <h2 className="mb-2 text-3xl text-white">
+                    {stockInfo.data
+                      ? stockInfo.data.company.AssetType
+                      : "Searching for stock..."}
+                  </h2>
+                </div>
+                <div>
+                  <h3 className="text-lg text-white">MARKET CAPITALIZATION</h3>
+                  <h2 className="mb-2 text-3xl text-white">
+                    {stockInfo.data?.company.Symbol
+                      ? `$ ${stockInfo.data.company.MarketCapitalization} B`
+                      : ""}
+                  </h2>
+                </div>
+                <div>
+                  <h3 className="text-lg text-white">SUMMARY</h3>
+                  <h2 className="mb-2 text-3xl leading-normal text-white">
+                    {stockInfo.data
+                      ? stockInfo.data.company.Description
+                      : "Searching for stock..."}
+                  </h2>
+                </div>
+              </div> */}
               {/* <p className="text-lg text-white">
                 Closing price:{" "}
                 {stockInfo.data
                   ? stockInfo.data.closingPrice
                   : "Searching for stock..."}
               </p> */}
-            </div>
-            <div>
-              <p className="text-2xl text-white">
-                {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-              </p>
             </div>
             <AuthShowcase />
           </div>
