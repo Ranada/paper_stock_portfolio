@@ -69,4 +69,8 @@ export const stocksRouter = createTRPCRouter({
         company,
       };
     }),
+
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.investments.findMany();
+  }),
 });

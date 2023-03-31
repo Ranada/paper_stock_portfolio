@@ -20,7 +20,7 @@ export default function Form() {
   // const [ticker, setTicker] = useState("");
   // const [stockInfo, setStockInfo] = useState({});
 
-  const handleSubmit = (event: React.SyntheticEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       ticker: { value: string };

@@ -14,6 +14,10 @@ const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "Checkout and rate other paper stock portfolios." });
   const stockInfo = api.stocks.getStockInfo.useQuery({text: 'ABNB'});
 
+  // Testing database connection
+  const { data } = api.stocks.getAll.useQuery();
+  console.log("DB DATA:", data)
+
   return (
     <>
       <Head>
