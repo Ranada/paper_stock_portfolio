@@ -6,11 +6,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
 
-// Components
-import Table from "./components/Table";
-
 import { useState } from 'react';
-// import { z } from "zod";
 
 const Home: NextPage = () => {
   const [tickerInput, setTickerInput] = useState('');
@@ -18,9 +14,6 @@ const Home: NextPage = () => {
   const stockInfo = api.stocks.getStockInfo.useQuery({ text: tickerInput });
 
   console.log("HELLO FROM CLIENT! YOUR INPUT IS: ", tickerInput);
-  
-  // const [stockInfo, setStockInfo] = useState({});
-  
   console.log("HELLO FROM CLIENT! YOUR STOCK INFO: ", stockInfo.data);
   
     const handleSubmit = (event: React.FormEvent) => {
@@ -30,32 +23,10 @@ const Home: NextPage = () => {
       };
       const tickerInput = target.ticker.value;
 
-      console.log("Clicked!", tickerInput, event);
+      console.log("Submitted!", tickerInput, event);
       setTickerInput(tickerInput);
-
-      // setStockInfo(stockInfo);
     };
   
-  
-  
-  
-  
-  
-  
-  // const apiDataValidator = z.object({
-  //   Symbol: z.string(),
-  //   AssetType: z.string().optional(),
-  //   Name: z.string().optional(),
-  //   Description: z.string().optional(),
-  //   MarketCapitalization: z.string(),
-  // });
-
-  // type apiDataType = z.infer<typeof apiDataValidator>;
-
-  // const stockInfo = api.stocks.getStockInfo.useQuery({text: tickerInput});
-
-  // Testing database connection
-  // TODO: Use investments table data to populate table
   const { data } = api.stocks.getAll.useQuery();
   console.log("DB DATA:", typeof data, data)
 
@@ -72,18 +43,32 @@ const Home: NextPage = () => {
             Paper Stock Portfolio
           </h1>
           <div className="w-full rounded-xl bg-white/10 p-4">
-            {data?.map((investment) => (
-              <li key={investment.id} className="text-white">
-                {investment.ticker} {investment.company} {investment.marketCap}{" "}
-                {investment.percentHoldings}
-              </li>
-            ))}
-            <Table />
+            <table className="w-full table-fixed text-white">
+              <thead>
+                <tr className="text-left">
+                  <th>Ticker</th>
+                  <th>Company</th>
+                  <th>Market Cap</th>
+                  <th>Percent holdings</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.map((investment) => (
+                  <tr
+                    key={investment.id}
+                    className="text-white hover:bg-white/20"
+                  >
+                    <td>{investment.ticker}</td>
+                    <td>{investment.company}</td>
+                    <td>{investment.marketCap}</td>
+                    <td>{investment.percentHoldings}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col justify-start gap-2">
             <div className="mb-8">
-              {/* <Form setTickerInput={setTickerInput} setStockInfo={setStockInfo} /> */}
-
               <form action="#" method="POST" onSubmit={handleSubmit}>
                 <div className="overflow-hidden">
                   <div className="mb-8 flex flex-wrap items-end space-x-4">
@@ -100,8 +85,6 @@ const Home: NextPage = () => {
                         id="ticker"
                         autoComplete="off"
                         placeholder="Enter ticker symbol"
-                        // value=""
-                        // onChange={({ target }) => setTicker(target?.value)}
                         className="mt-2 block w-full rounded-md border-0 bg-white/[.10] py-1.5 pl-2.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
