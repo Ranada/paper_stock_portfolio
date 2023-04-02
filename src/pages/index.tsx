@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 const Home: NextPage = () => {
   const [tickerInput, setTickerInput] = useState('');
+  
   const hello = api.example.hello.useQuery({ text: "Track stocks and your target percentage holdings." });
   const stockInfo = api.stocks.getStockInfo.useQuery({ text: tickerInput });
 
@@ -27,6 +28,13 @@ const Home: NextPage = () => {
     setTickerInput(tickerInput);
     target.ticker.value = '';
   };
+
+  const handleAddToPortfolio = (event: React.MouseEvent) => {
+    console.log("From handleAddToPortfolio")
+    console.log(event);
+    console.log(stockInfo);
+    
+  }
   
   const { data } = api.stocks.getAll.useQuery();
   console.log("DB DATA:", typeof data, data)
@@ -35,13 +43,24 @@ const Home: NextPage = () => {
     if (stockInfo.data?.company.Symbol) {
       return (
         <div className="flex flex-col gap-y-4">
-          <div>
-            <h3 className="text-xs text-white">TICKER</h3>
-            <h2 className="mb-2 text-2xl text-white">
-              {stockInfo.data
-                ? stockInfo.data.company.Symbol
-                : "Searching for stock..."}
-            </h2>
+          <div className="flex gap-x-8 items-center">
+            <div>
+              <h3 className="text-xs text-white">TICKER</h3>
+              <h2 className="mb-2 text-2xl text-white">
+                {stockInfo.data
+                  ? stockInfo.data.company.Symbol
+                  : "Searching for stock..."}
+              </h2>
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                onClick={handleAddToPortfolio}
+              >
+                Add To Portfolio
+              </button>
+            </div>
           </div>
           <div>
             <h3 className="text-xs text-white">COMPANY NAME</h3>
@@ -78,10 +97,9 @@ const Home: NextPage = () => {
         </div>
       );
     }
-    return <div></div>
-  }
-
-
+    return <div></div>;
+  };
+  
   return (
     <>
       <Head>
@@ -157,54 +175,6 @@ const Home: NextPage = () => {
                 </div>
               </form>
               <DisplayCompanyInfo />
-              {/* <div className="flex flex-col gap-y-8">
-                <div>
-                  <h3 className="text-lg text-white">TICKER</h3>
-                  <h2 className="mb-2 text-3xl text-white">
-                    {stockInfo.data
-                      ? stockInfo.data.company.Symbol
-                      : "Searching for stock..."}
-                  </h2>
-                </div>
-                <div>
-                  <h3 className="text-lg text-white">COMPANY NAME</h3>
-                  <h2 className="mb-2 text-3xl text-white">
-                    {stockInfo.data
-                      ? stockInfo.data.company.Name
-                      : "Searching for stock..."}
-                  </h2>
-                </div>
-                <div>
-                  <h3 className="text-lg text-white">ASSET TYPE</h3>
-                  <h2 className="mb-2 text-3xl text-white">
-                    {stockInfo.data
-                      ? stockInfo.data.company.AssetType
-                      : "Searching for stock..."}
-                  </h2>
-                </div>
-                <div>
-                  <h3 className="text-lg text-white">MARKET CAPITALIZATION</h3>
-                  <h2 className="mb-2 text-3xl text-white">
-                    {stockInfo.data?.company.Symbol
-                      ? `$ ${stockInfo.data.company.MarketCapitalization} B`
-                      : ""}
-                  </h2>
-                </div>
-                <div>
-                  <h3 className="text-lg text-white">SUMMARY</h3>
-                  <h2 className="mb-2 text-3xl leading-normal text-white">
-                    {stockInfo.data
-                      ? stockInfo.data.company.Description
-                      : "Searching for stock..."}
-                  </h2>
-                </div>
-              </div> */}
-              {/* <p className="text-lg text-white">
-                Closing price:{" "}
-                {stockInfo.data
-                  ? stockInfo.data.closingPrice
-                  : "Searching for stock..."}
-              </p> */}
             </div>
             <AuthShowcase />
           </div>
@@ -222,10 +192,10 @@ const AuthShowcase: React.FC = () => {
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
     { enabled: sessionData?.user !== undefined },
-  );
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    );
+    
+    return (
+      <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
@@ -239,3 +209,4 @@ const AuthShowcase: React.FC = () => {
     </div>
   );
 };
+

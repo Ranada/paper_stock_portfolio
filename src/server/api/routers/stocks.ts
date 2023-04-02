@@ -72,7 +72,14 @@ export const stocksRouter = createTRPCRouter({
 
   getAll: publicProcedure.query(async ({ ctx }) => {
     const investments = await ctx.prisma.investments.findMany({
-        take: 100,
+      take: 100,
+    });
+    return investments;
+  }),
+
+  addStock: publicProcedure.query(async ({ ctx }) => {
+    const investments = await ctx.prisma.investments.findMany({
+      take: 100,
     });
     return investments;
   }),
