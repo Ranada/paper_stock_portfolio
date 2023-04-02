@@ -25,6 +25,7 @@ const Home: NextPage = () => {
 
     console.log("Submitted!", tickerInput, event);
     setTickerInput(tickerInput);
+    target.ticker.value = '';
   };
   
   const { data } = api.stocks.getAll.useQuery();
