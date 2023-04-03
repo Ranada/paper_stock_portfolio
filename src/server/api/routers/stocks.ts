@@ -1,6 +1,8 @@
+import { resolve } from "path";
+console.log(resolve);
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 const getCompanyOverview = async (ticker: string) => {
   try {
@@ -28,22 +30,21 @@ const getCompanyOverview = async (ticker: string) => {
 //     console.log(err);
 //   }
 // };
+const apiDataValidator = z.object({
+  Symbol: z.string(),
+  AssetType: z.string().optional(),
+  Name: z.string().optional(),
+  Description: z.string().optional(),
+  MarketCapitalization: z.string(),
+});
+
+type apiDataType = z.infer<typeof apiDataValidator>;
 
 export const stocksRouter = createTRPCRouter({
   getStockInfo: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(async ({ input }) => {
       const ticker = input.text;
-
-      const apiDataValidator = z.object({
-        Symbol: z.string(),
-        AssetType: z.string().optional(),
-        Name: z.string().optional(),
-        Description: z.string().optional(),
-        MarketCapitalization: z.string(),
-      });
-
-      type apiDataType = z.infer<typeof apiDataValidator>;
 
       const companyAPIData: apiDataType = (await getCompanyOverview(
         ticker
@@ -77,10 +78,25 @@ export const stocksRouter = createTRPCRouter({
     return investments;
   }),
 
-  addStock: publicProcedure.query(async ({ ctx }) => {
-    const investments = await ctx.prisma.investments.findMany({
-      take: 100,
-    });
-    return investments;
-  }),
+  postInvestment: protectedProcedure
+    .input(
+      z.object({
+        Symbol: z.string(),
+        AssetType: z.string(),
+        Name: z.string(),
+        Description: z.string(),
+        MarketCapitalization: z.string(),
+      })
+    )
+    .mutation( async ({ ctx, input }) => {
+        console.log("FROM POSTINVESMENT PROCEDURE", ctx.session, input);
+        return await ctx.prisma.investments.create({
+            data: {
+                company: input.Name,
+                ticker: input.Symbol,
+                marketCap: input.MarketCapitalization,
+                percentHoldings: "0"
+            }
+        })
+    }),
 });

@@ -13,9 +13,14 @@ const Home: NextPage = () => {
   
   const hello = api.example.hello.useQuery({ text: "Track stocks and your target percentage holdings." });
   const stockInfo = api.stocks.getStockInfo.useQuery({ text: tickerInput });
+  const postInvestment = api.stocks.postInvestment.useMutation({
+    onSuccess: () => console.log("Great Success!"),
+    onError: (e) => console.log("Post investment failed:", e)
+  });
 
   console.log("HELLO FROM CLIENT! YOUR INPUT IS: ", tickerInput);
   console.log("HELLO FROM CLIENT! YOUR STOCK INFO: ", stockInfo.data);
+  console.log("HELLO FROM CLIENT! POST INFO: ", postInvestment.data);
   
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -33,7 +38,14 @@ const Home: NextPage = () => {
     console.log("From handleAddToPortfolio")
     console.log(event);
     console.log(stockInfo);
-    
+    postInvestment.mutate({
+      Symbol: stockInfo.data?.company.Symbol || "",
+      AssetType: stockInfo.data?.company.AssetType || "",
+      Name: stockInfo.data?.company.Name || "",
+      Description: stockInfo.data?.company.Description || "",
+      MarketCapitalization: stockInfo.data?.company.MarketCapitalization || "",
+    });
+
   }
   
   const { data } = api.stocks.getAll.useQuery();
@@ -54,7 +66,7 @@ const Home: NextPage = () => {
             </div>
             <div>
               <button
-                type="submit"
+                // type="submit"
                 className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                 onClick={handleAddToPortfolio}
               >
