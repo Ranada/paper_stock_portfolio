@@ -4,16 +4,27 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
+const apiDataValidator = z.object({
+  Symbol: z.string(),
+  AssetType: z.string().optional(),
+  Name: z.string().optional(),
+  Description: z.string().optional(),
+  MarketCapitalization: z.string(),
+});
+
+type apiDataType = z.infer<typeof apiDataValidator>;
+
 const getCompanyOverview = async (ticker: string) => {
   try {
     ticker = ticker.toUpperCase();
     const res = await fetch(
       `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=8EJHKBNM180M13R5`
     );
-    const data = (await res.json()) as object;
+    const data = apiDataValidator.parse(await res.json());
+
     return data;
   } catch (err) {
-    console.log(err);
+    console.log("Error:", err);
   }
 };
 
@@ -30,15 +41,6 @@ const getCompanyOverview = async (ticker: string) => {
 //     console.log(err);
 //   }
 // };
-const apiDataValidator = z.object({
-  Symbol: z.string(),
-  AssetType: z.string().optional(),
-  Name: z.string().optional(),
-  Description: z.string().optional(),
-  MarketCapitalization: z.string(),
-});
-
-type apiDataType = z.infer<typeof apiDataValidator>;
 
 export const stocksRouter = createTRPCRouter({
   getStockInfo: publicProcedure
@@ -46,9 +48,9 @@ export const stocksRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const ticker = input.text;
 
-      const companyAPIData: apiDataType = (await getCompanyOverview(
-        ticker
-      )) as apiDataType;
+      const companyAPIData = await getCompanyOverview(ticker);
+
+      if (!companyAPIData) throw new Error("Unable to find stock data.")
 
       const company: apiDataType = {
         Symbol: companyAPIData.Symbol,
