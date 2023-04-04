@@ -18,7 +18,7 @@ This project is a paper stock portfolio. It is built with:
 4. Open the project in browser: `http://localhost:3000/`
 
 ## Usage
-Open a deployed version of the project in Vercel using the following URL: `https://paper-stock-portfolio.vercel.app/`
+Open a deployed version of the project in Vercel using the following URL: https://paper-stock-portfolio.vercel.app/
 
 ## Notes
 - This is an ongoing project, and gradually rolling out features
