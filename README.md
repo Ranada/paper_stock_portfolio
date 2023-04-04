@@ -9,7 +9,7 @@ This project is a paper stock portfolio. It is built with:
 4. Prisma
 5. Tailwind CSS
 
-<img src="./public/images/paper.png" >
+<img src="./public/paper-stock-portfolio-1.png" >
 
 ## Installation
 1. To access a copy of the project and run it on your local machine, clone the project: `git clone https://github.com/Ranada/paper_stock_portfolio.git`
