@@ -15,10 +15,14 @@ This project is a paper stock portfolio. It is built with:
 1. To access a copy of the project and run it on your local machine, clone the project: `git clone https://github.com/Ranada/paper_stock_portfolio.git`
 2. Install project dependencies: `npm install`
 3. Start the server: `npm run dev`
-4. Open the project in browser: `http://localhost:3000/`
+4. Open the project in browser: http://localhost:3000/
 
 ## Usage
-Open a deployed version of the project in Vercel using the following URL: https://paper-stock-portfolio.vercel.app/
+- Open a deployed version of the project in Vercel using the following URL: https://paper-stock-portfolio.vercel.app/
+
+- The app features to interact with the database are in progress. In the meantime, you can interact with the database by: 
+1. Starting the Prisma Studio visual editor in terminal using `npx prisma studio`
+2. Open Prisma Studio in the browser: http://localhost:5555
 
 ## Notes
 - This is an ongoing project, and gradually rolling out features
