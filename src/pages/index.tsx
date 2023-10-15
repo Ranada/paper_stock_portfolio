@@ -1,107 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-// import Link from "next/link";
-
 import { signIn, signOut, useSession } from "next-auth/react";
-
 import { api } from "~/utils/api";
-
-import { useState } from 'react';
-
-// import Form from './components/Form'
 import Link from "next/link";
 
 const Home: NextPage = () => {
-  const [tickerInput, setTickerInput] = useState('');
-  
   const hello = api.example.hello.useQuery({ text: "Track stocks and your target percentage holdings." });
-  const stockInfo = api.stocks.getStockInfo.useQuery({ text: tickerInput });
-  const postInvestment = api.stocks.postInvestment.useMutation({
-    onSuccess: () => console.log("Great Success!"),
-    onError: (e) => console.log("Post investment failed:", e)
-  });
-
-  console.log("HELLO FROM CLIENT! YOUR INPUT IS: ", tickerInput);
-  console.log("HELLO FROM CLIENT! YOUR STOCK INFO: ", stockInfo.data);
-  console.log("HELLO FROM CLIENT! POST INFO: ", postInvestment.data);
-
-  const handleAddToPortfolio = (event: React.MouseEvent) => {
-    console.log("From handleAddToPortfolio")
-    console.log(event);
-    console.log(stockInfo);
-    postInvestment.mutate({
-      Symbol: stockInfo.data?.company.Symbol || "",
-      AssetType: stockInfo.data?.company.AssetType || "",
-      Name: stockInfo.data?.company.Name || "",
-      Description: stockInfo.data?.company.Description || "",
-      MarketCapitalization: stockInfo.data?.company.MarketCapitalization || "",
-    });
-
-  }
-  
   const { data } = api.stocks.getAll.useQuery();
-  console.log("DB DATA:", typeof data, data)
 
-  const DisplayCompanyInfo: React.FC = () => {
-    if (stockInfo.data?.company.Symbol) {
-      return (
-        <div className="flex flex-col gap-y-4">
-          <div className="flex gap-x-8 items-center">
-            <div>
-              <h3 className="text-xs text-white">TICKER</h3>
-              <h2 className="mb-2 text-2xl text-white">
-                {stockInfo.data
-                  ? stockInfo.data.company.Symbol
-                  : "Searching for stock..."}
-              </h2>
-            </div>
-            <div>
-              <button
-                // type="submit"
-                className="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                onClick={handleAddToPortfolio}
-              >
-                Add To Portfolio
-              </button>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-xs text-white">COMPANY NAME</h3>
-            <h2 className="mb-2 text-2xl text-white">
-              {stockInfo.data
-                ? stockInfo.data.company.Name
-                : "Searching for stock..."}
-            </h2>
-          </div>
-          <div>
-            <h3 className="text-xs text-white">ASSET TYPE</h3>
-            <h2 className="mb-2 text-2xl text-white">
-              {stockInfo.data
-                ? stockInfo.data.company.AssetType
-                : "Searching for stock..."}
-            </h2>
-          </div>
-          <div>
-            <h3 className="text-xs text-white">MARKET CAPITALIZATION</h3>
-            <h2 className="mb-2 text-2xl text-white">
-              {stockInfo.data?.company.Symbol
-                ? `$ ${stockInfo.data.company.MarketCapitalization} B`
-                : ""}
-            </h2>
-          </div>
-          <div>
-            <h3 className="text-xs text-white">SUMMARY</h3>
-            <h2 className="mb-2 text-2xl leading-normal text-white">
-              {stockInfo.data
-                ? stockInfo.data.company.Description
-                : "Searching for stock..."}
-            </h2>
-          </div>
-        </div>
-      );
-    }
-    return <div></div>;
-  };
+  console.log("DB DATA:", typeof data, data)
   
   return (
     <>
