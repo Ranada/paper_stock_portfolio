@@ -5,11 +5,13 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "Track stocks and your target percentage holdings." });
+  const hello = api.example.hello.useQuery({
+    text: "Track stocks and your target percentage holdings.",
+  });
   const { data } = api.stocks.getAll.useQuery();
 
-  console.log("DB DATA:", typeof data, data)
-  
+  console.log("DB DATA:", typeof data, data);
+
   return (
     <>
       <Head>
@@ -18,7 +20,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-start bg-neutral-900">
-        <div className="justify-start container flex w-2/3 flex-col items-start gap-12 px-4 py-16 ">
+        <div className="container flex w-2/3 flex-col items-start justify-start gap-12 px-4 py-16 ">
           <h1 className="text-left text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Paper Stock Portfolio
           </h1>
@@ -28,11 +30,11 @@ const Home: NextPage = () => {
             </p>
           </div>
           <div className="flex justify-end">
-              <Link href="/stocksearch" className="text-white">
-                <button className="inline-flex justify-start rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                  Search Stocks
-                </button>
-              </Link>
+            <Link href="/stocksearch" className="text-white">
+              <button className="inline-flex justify-start rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                Search Stocks
+              </button>
+            </Link>
           </div>
           <div className="w-full rounded-xl bg-white/10 p-4">
             <table className="w-full table-fixed text-white">
@@ -85,7 +87,7 @@ function AuthShowcase() {
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button
-        className="rounded-md bg-white/10 px-10 py-2 font-semibold text-sm font-semibold text-white no-underline transition hover:bg-white/20"
+        className="rounded-md bg-white/10 px-10 py-2 text-sm font-semibold font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
@@ -93,4 +95,3 @@ function AuthShowcase() {
     </div>
   );
 }
-
